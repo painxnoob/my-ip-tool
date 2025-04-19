@@ -1,10 +1,80 @@
-<!-- Save this as index.html and commit to your GitHub repo -->
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Test Page</title>
-  </head>
-  <body>
-    <h1>Hello, GitHub Pages!</h1>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heart Beat Animation</title>
+  <style>
+    /* Basic page styling */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #ffe6f7;
+      margin: 0;
+      flex-direction: column;
+    }
+
+    /* Styling for the heart */
+    .heart {
+      font-size: 120px;
+      color: #f44336;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    /* Animation for the heart when beating */
+    .beat {
+      transform: scale(1.2);
+    }
+
+    /* Button styling */
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Heart element -->
+  <div id="heart" class="heart">&#10084;</div>
+
+  <!-- Button to toggle the heart's beat -->
+  <button id="toggleButton">Make it Beat ❤️</button>
+
+  <script>
+    // Get the heart and button elements
+    const heart = document.getElementById("heart");
+    const toggleButton = document.getElementById("toggleButton");
+
+    // Variable to track the animation state
+    let isBeating = false;
+
+    // Function to toggle the heartbeat animation
+    toggleButton.addEventListener("click", () => {
+      if (isBeating) {
+        heart.classList.remove("beat");
+        toggleButton.textContent = "Make it Beat ❤️";
+      } else {
+        heart.classList.add("beat");
+        toggleButton.textContent = "Stop the Beat";
+      }
+      isBeating = !isBeating;
+    });
+  </script>
+
+</body>
 </html>
