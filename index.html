@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IP & Location Finder</title>
+  <title>IP Finder</title>
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -25,9 +27,17 @@
     }
 
     @keyframes float {
-      0% { transform: translateY(0) scale(1); opacity: 0; }
-      50% { opacity: 0.4; }
-      100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.2);
+        opacity: 0;
+      }
     }
 
     .card {
@@ -75,16 +85,15 @@
       background: linear-gradient(to right, #005bea, #00c6ff);
     }
 
-    .info {
+    .ip-address {
+      font-size: 1.3rem;
       margin-top: 1.5rem;
       opacity: 0;
       transform: translateY(10px);
       transition: opacity 0.3s ease, transform 0.3s ease;
-      font-size: 1.1rem;
-      line-height: 1.6;
     }
 
-    .info.show {
+    .ip-address.show {
       opacity: 1;
       transform: translateY(0);
     }
@@ -92,7 +101,7 @@
 </head>
 <body>
 
-  <!-- Bubbles Background -->
+  <!-- Bubbles -->
   <script>
     for (let i = 0; i < 20; i++) {
       const bubble = document.createElement('span');
@@ -107,38 +116,31 @@
     }
   </script>
 
-  <!-- Main Card -->
+  <!-- Card UI -->
   <div class="card">
-    <h1>🌐 IP & Location Finder</h1>
-    <p>Click below to see your IP and location info.</p>
-    <button onclick="getInfo()">Show Info</button>
-    <div class="info" id="infoDisplay"></div>
+    <h1>🌐 What's My IP?</h1>
+    <p>Click the button to reveal your public IP address.</p>
+    <button onclick="getIP()">Show My IP</button>
+    <div class="ip-address" id="ipDisplay"></div>
   </div>
 
-  <!-- Script -->
+  <!-- IP JS -->
   <script>
-    async function getInfo() {
-      const infoBox = document.getElementById('infoDisplay');
-      infoBox.classList.remove('show');
-      infoBox.textContent = "Fetching info...";
-
+    async function getIP() {
+      const display = document.getElementById('ipDisplay');
+      display.classList.remove('show');
+      display.textContent = "Fetching your IP...";
       try {
-        const res = await fetch('https://ipinfo.io/json?token=34f1b31421d6bc'); // Replace 'demo' with your token for production
+        const res = await fetch('https://api.ipify.org?format=json');
         const data = await res.json();
-
-        infoBox.innerHTML = `
-          🔒 <strong>IP:</strong> ${data.ip}<br/>
-          🏙️ <strong>City:</strong> ${data.city}<br/>
-          🗺️ <strong>Region:</strong> ${data.region}<br/>
-          🌍 <strong>Country:</strong> ${data.country}<br/>
-          🕓 <strong>Timezone:</strong> ${data.timezone}<br/>
-          🌐 <strong>ISP:</strong> ${data.org}
-        `;
-        infoBox.classList.add('show');
-      } catch (err) {
-        infoBox.textContent = "⚠️ Failed to fetch location info.";
-        infoBox.classList.add('show');
-        console.error(err);
+        setTimeout(() => {
+          display.textContent = `🔒 Your IP address is: ${data.ip}`;
+          display.classList.add('show');
+        }, 500);
+      } catch (error) {
+        display.textContent = "⚠️ Unable to fetch IP. Please try again.";
+        display.classList.add('show');
+        console.error(error);
       }
     }
   </script>
