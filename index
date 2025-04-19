@@ -3,24 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IP Finder</title>
+  <title>IP & Location Finder</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      overflow: hidden;
       color: #fff;
+      position: relative;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      animation: float 10s linear infinite;
+      bottom: -100px;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      50% { opacity: 0.4; }
+      100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
     }
 
     .card {
+      position: relative;
+      z-index: 1;
       background: rgba(255, 255, 255, 0.05);
       padding: 2.5rem 2rem;
       border-radius: 20px;
@@ -29,11 +41,15 @@
       text-align: center;
       max-width: 90%;
       width: 400px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute;
       transition: transform 0.3s ease;
     }
 
     .card:hover {
-      transform: scale(1.02);
+      transform: translate(-50%, -50%) scale(1.02);
     }
 
     h1 {
@@ -59,44 +75,70 @@
       background: linear-gradient(to right, #005bea, #00c6ff);
     }
 
-    .ip-address {
-      font-size: 1.3rem;
+    .info {
       margin-top: 1.5rem;
       opacity: 0;
       transform: translateY(10px);
       transition: opacity 0.3s ease, transform 0.3s ease;
+      font-size: 1.1rem;
+      line-height: 1.6;
     }
 
-    .ip-address.show {
+    .info.show {
       opacity: 1;
       transform: translateY(0);
     }
   </style>
 </head>
 <body>
+
+  <!-- Bubbles Background -->
+  <script>
+    for (let i = 0; i < 20; i++) {
+      const bubble = document.createElement('span');
+      bubble.className = 'bubble';
+      const size = Math.random() * 60 + 20;
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.left = `${Math.random() * 100}%`;
+      bubble.style.animationDuration = `${8 + Math.random() * 5}s`;
+      bubble.style.animationDelay = `${Math.random() * 5}s`;
+      document.body.appendChild(bubble);
+    }
+  </script>
+
+  <!-- Main Card -->
   <div class="card">
-    <h1>🌐 What's My IP?</h1>
-    <p>Click the button to reveal your public IP address.</p>
-    <button onclick="getIP()">Show My IP</button>
-    <div class="ip-address" id="ipDisplay"></div>
+    <h1>🌐 IP & Location Finder</h1>
+    <p>Click below to see your IP and location info.</p>
+    <button onclick="getInfo()">Show Info</button>
+    <div class="info" id="infoDisplay"></div>
   </div>
 
+  <!-- Script -->
   <script>
-    async function getIP() {
-      const display = document.getElementById('ipDisplay');
-      display.classList.remove('show');
-      display.textContent = "Fetching your IP...";
+    async function getInfo() {
+      const infoBox = document.getElementById('infoDisplay');
+      infoBox.classList.remove('show');
+      infoBox.textContent = "Fetching info...";
+
       try {
-        const res = await fetch('https://api.ipify.org?format=json');
+        const res = await fetch('https://ipinfo.io/json?token=34f1b31421d6bc'); // Replace 'demo' with your token for production
         const data = await res.json();
-        setTimeout(() => {
-          display.textContent = `🔒 Your IP address is: ${data.ip}`;
-          display.classList.add('show');
-        }, 500);
-      } catch (error) {
-        display.textContent = "⚠️ Unable to fetch IP. Please try again.";
-        console.error(error);
-        display.classList.add('show');
+
+        infoBox.innerHTML = `
+          🔒 <strong>IP:</strong> ${data.ip}<br/>
+          🏙️ <strong>City:</strong> ${data.city}<br/>
+          🗺️ <strong>Region:</strong> ${data.region}<br/>
+          🌍 <strong>Country:</strong> ${data.country}<br/>
+          🕓 <strong>Timezone:</strong> ${data.timezone}<br/>
+          🌐 <strong>ISP:</strong> ${data.org}
+        `;
+        infoBox.classList.add('show');
+      } catch (err) {
+        infoBox.textContent = "⚠️ Failed to fetch location info.";
+        infoBox.classList.add('show');
+        console.error(err);
       }
     }
   </script>
