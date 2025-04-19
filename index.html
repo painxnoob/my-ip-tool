@@ -123,7 +123,7 @@
       infoBox.textContent = "Fetching info...";
 
       try {
-        const res = await fetch('https://ipinfo.io/json?token=demo'); // Replace 'demo' with your token for production
+        const res = await fetch('https://ipinfo.io/json?token=demo'); 
         const data = await res.json();
 
         infoBox.innerHTML = `
